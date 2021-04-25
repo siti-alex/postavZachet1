@@ -1,0 +1,129 @@
+<!--
+Модель ядерного реактора. Два процесса управляют стержнем катализатора ядерной реакции. Один процесс в каждый момент времени помещает стержень на одно деление вглубь реактора, а другой процесс вынимает стержень на одно деление в каждый момент времени. Третий процесс следит за состоянием реактора, и, если стержень вынут больше, чем на предельное значение, то сообщает об остановке реактора и завершает программу; если стержень опущен в реактор больше, чем это допустимо, сообщает о взрыве реактора и завершает программу. (Reactor.java)
+-->
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<style>
+   .reactor {
+    display: block; 
+    text-align: center; 
+    font-style: italic; 
+    margin-top: 20%; 
+    margin-bottom: 5px; 
+    color: #666;
+   }
+   #kernel1 {
+   	position: relative;
+   	left: 250px; 
+   	top: -200px;
+   }
+   #kernel2 {
+   	position: relative;
+   	left: 450px; 
+   	top: -200px;
+   }
+   #fields input{
+   	margin-top: 5px;
+   	width: 25px;
+   }
+  </style>
+<body>
+<div class="reactor">
+	<img src="image/Up.png" id="kernel1"></img>
+	<img src="image/Down.png" id="kernel2"></img>
+	<img src="image/reactor.png"></img>
+	<div id="score" style="position: relative; left: 50px; top: -150px; text-align: center; font-size: 200%;"></div>
+<div>
+<div id="fields">
+	<fieldset>
+	   <legend>Работа с реактором</legend>
+		    <input type="text" id="minLvl" value="0"> Минимальный уровень реактора;<br>
+		    <input type="text" id="maxLvl" value="100"> Максимальный уровень реактора;<br>
+		    <input type="text" id="kertel1" value="1"> Плотность понижающего стержня;<br>
+		    <input type="text" id="kertel2" value="1"> Плотность повышающего стержня;<br>
+		    <input type="text" id="Uranus" value="50"> Начальный уровень реактора;<br>
+		    <input type="text" id="Increment" value="1"> Плотность забивки урана;<br>
+	      	<p><button onclick="reactor2()">Запустить</button></p>
+	      	<p><button onclick="alert('Щас рванет'); Boom = true;">Взорвать</button></p>
+  </fieldset>
+</div>
+	
+
+
+<script type="text/javascript">
+	var Uranus = 50;
+	var kernImg1 = document.getElementById("kernel1");
+	var kernImg2 = document.getElementById("kernel2");
+
+	var minLvl = 30;
+	var maxLvl = 70;
+
+	var kernel1 = 5;
+	var kernel2 = 5;
+
+	var Boom = false;
+
+	var MaxStop = false;
+
+	function reactor2(Stop){
+		if(!Stop) {
+		let Die = setInterval(() => {
+			Uranus++;
+			console.log(Uranus);
+			document.getElementById("score").innerHTML = Uranus;
+		},200);
+		runKernel();
+		setTimeout(runKernel1,500);
+		let Ivent = setInterval(() => {if(Uranus >= 100 || Boom) {alert("Взрыв"); clearInterval(Die); clearInterval(Ivent); MaxStop = true;}
+		else
+		if(Uranus <= 0) {alert("Заглох"); clearInterval(Die); clearInterval(Ivent)}}, 1000);
+		}
+		else
+		clearInterval(Die);
+	}
+
+	function reactor() {
+		
+		let Die = setInterval(() => {Uranus++; console.log(Uranus); document.getElementById("score").innerHTML = Uranus; if (Uranus == minLvl) Up(); else if (Uranus == maxLvl) Down()}, 1000);
+		let Stop = setInterval(() => {if(Uranus >= 100 || Boom) {alert("Взрыв"); clearInterval(Die); clearInterval(Stop);}
+		else
+		if(Uranus <= 0) {alert("Заглох"); clearInterval(Die); clearInterval(Stop)}}, 2000);
+
+	}
+	function Down() {
+		let kernel = 1;
+		Uranus -= kernel;
+		kernImg2.style.top = '-80px';
+		setTimeout(animationDown,500);
+	
+	}
+	function Down1(){
+		let kernel = 1;
+		kernImg1.style.top = '-80px';
+		Uranus -=kernel;
+		setTimeout(animationDown1,500);
+	}
+	function animationDown(){
+		if(MaxStop == false){
+			kernImg2.style.top = '-200px';
+		}
+	};
+	function animationDown1(){
+		if(MaxStop == false){
+			kernImg1.style.top = '-200px';
+		}
+	};
+	function runKernel(Stop){
+			let Kernels1 = setInterval(() => {if (MaxStop == false) {Down()}},1000);
+	};
+	function runKernel1(Stop){
+			let Kernels2 = setInterval(() => {if (MaxStop == false) {Down1()}},1000);
+			
+	};
+
+</script>
+</body>
+</html>
